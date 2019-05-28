@@ -10,7 +10,7 @@ class Node {
 
 class Prog extends Node {
   constructor(loc, body = []) {
-    super(NodeType.Prog, loc);
+    super(NodeType.PROG, loc);
     this.body = body;
   }
 }
@@ -23,7 +23,7 @@ class SayHi extends Node {
 }
 
 class NodeType {}
-NodeType.Prog = "prog";
+NodeType.PROG = "prog";
 NodeType.SAY_HI = "sayhi";
 
 class Parser {
