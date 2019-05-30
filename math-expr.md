@@ -399,10 +399,131 @@ parseExpr1(left) {
 
 ![](images/expr123.svg)
 
-我们可以以一个 U 型的方式来看这个图，从左边开始往下，到了最底部时，转到右边往上。
-
-左边和中间表示我们的递归调用的参数传递，以及表达式字符串被不断读取的消减过程。
-
-右边表示了递归调用结束，不断返回并构造节点的过程。
+我们可以以一个 U 型的方式来看这个图，从左边开始往下，到了最底部时，转到右边往上。左边和中间表示我们的递归调用的参数传递，以及表达式字符串被不断读取的消减过程。右边表示了递归调用结束，不断返回并构造节点的过程。
 
 上图中我们不仅分析了整个表达式解析的过程；还根据这个过程，演示了我们消除左递归后的、右递归的执行过程。
+
+在我们着手试一试完善的成果之前，我们先添加一个新的 Visitor - 「YamlVisitor」，它可以将我们的 AST 输出为 [YAML](https://yaml.org/) 的格式，这个格式的好处就是既能体现我们树形结构的层级关系，格式上也显得更加清晰。
+
+我们先往类「Visitor」中增加一些内容：
+
+```js
+visitExprStmt(node) {}
+
+visitStmt(node) {
+  switch (node.type) {
+    case NodeType.EXPR_STMT:
+      return this.visitExprStmt(node);
+    case NodeType.SAY_HI:
+      return this.visitSayHi(node);
+  }
+}
+
+visitStmtList(list) {}
+
+visitNumLiteral(node) {}
+
+visitBinaryExpr(node) {}
+
+visitExpr(node) {
+  switch (node.type) {
+    case NodeType.NUMBER:
+      return this.visitNumLiteral(node);
+    case NodeType.BINARY_EXPR:
+      return this.visitBinaryExpr(node);
+  }
+}
+```
+
+空的方法留给子类去实现，`visitStmt` 和 `visitExpr` 做一个简单的任务派发，根据不同节点的类型，将它们派发到各自的处理方法中。
+
+下面是「YamlVisitor」的实现：
+
+```js
+const { Visitor } = require("./visitor");
+const yaml = require("js-yaml");
+
+class YamlVisitor extends Visitor {
+  visitProg(node) {
+    return yaml.dump({
+      type: node.type,
+      body: this.visitStmtList(node.body)
+    });
+  }
+
+  visitStmtList(list) {
+    return list.map(stmt => this.visitStmt(stmt));
+  }
+
+  visitExprStmt(node) {
+    return {
+      type: node.type,
+      value: this.visitExpr(node.value)
+    };
+  }
+
+  visitBinaryExpr(node) {
+    return {
+      type: node.type,
+      op: node.op.type,
+      left: this.visitExpr(node.left),
+      right: this.visitExpr(node.right)
+    };
+  }
+
+  visitNumLiteral(node) {
+    return node.value;
+  }
+}
+```
+
+在子节点的实现中，我仅输出扼要的内容，比如跳过了行列号，而在起始点的处理方法 `visitProg` 中，我们将返回根据 YAML 语法序列化后的字符串。
+
+最后通过一小段程序来检验这次的完成结果：
+
+```js
+const { Source } = require("./source");
+const { Lexer, TokenType } = require("./lexer");
+const { Parser } = require("./parser");
+const { InterpretVisitor } = require("./interpret-visitor");
+const { YamlVisitor } = require("./yaml-visitor");
+const util = require("util");
+
+const code = `1 + 2 * 3
+4 + 5 * 6
+`;
+const src = new Source(code);
+const lexer = new Lexer(src);
+const parser = new Parser(lexer);
+
+const ast = parser.parseProg();
+const visitor = new YamlVisitor();
+console.log(visitor.visitProg(ast));
+```
+
+幸运的话，将看到类似下面的输出：
+
+```yaml
+type: prog
+body:
+  - type: exprStmt
+    value:
+      type: binaryExpr
+      op: +
+      left: '1'
+      right:
+        type: binaryExpr
+        op: '*'
+        left: '2'
+        right: '3'
+  - type: exprStmt
+    value:
+      type: binaryExpr
+      op: +
+      left: '4'
+      right:
+        type: binaryExpr
+        op: '*'
+        left: '5'
+        right: '6'
+```

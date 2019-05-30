@@ -6,7 +6,7 @@ const { YamlVisitor } = require("./yaml-visitor");
 const util = require("util");
 
 const code = `1 + 2 * 3
-4 + 5 * 5
+4 + 5 * 6
 `;
 const src = new Source(code);
 const lexer = new Lexer(src);
