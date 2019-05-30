@@ -9,5 +9,6 @@
   - [词法解析器](lexer.md)
   - [语法解析器](parser.md)
   - [使用 AST - 第一个解释器](ast-interpreter.md)
-  - [解析算术表达式](math-expr.md)
+  - [解析算术表达式 - 左递归和其消除法](math-expr.md)
+  - [解析算术表达式 - 结核性与优先级](math-expr2.md)
   - [使用 AST - 计算器](ast-calculator.md)
