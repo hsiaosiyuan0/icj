@@ -22,6 +22,13 @@ class SayHi extends Node {
   }
 }
 
+class PrintStmt extends Node {
+  constructor(loc, value) {
+    super(NodeType.PRINT_STMT, loc);
+    this.value = value;
+  }
+}
+
 class ExprStmt extends Node {
   constructor(loc, value) {
     super(NodeType.EXPR_STMT, loc);
@@ -51,6 +58,7 @@ NodeType.SAY_HI = "sayhi";
 NodeType.EXPR_STMT = "exprStmt";
 NodeType.BINARY_EXPR = "binaryExpr";
 NodeType.NUMBER = "number";
+NodeType.PRINT_STMT = "printStmt";
 
 class Parser {
   constructor(lexer) {
@@ -66,8 +74,18 @@ class Parser {
       if (tok.type === TokenType.EOF) break;
       if (tok.type === TokenType.HI) stmt = this.parseSayHi();
       if (tok.type === TokenType.NUMBER) stmt = this.parseExprStmt();
+      if (tok.type === TokenType.PRINT) stmt = this.parsePrintStmt();
       node.body.push(stmt);
     }
+    node.loc.end = this.lexer.getPos();
+    return node;
+  }
+
+  parsePrintStmt() {
+    const node = new PrintStmt();
+    let tok = this.lexer.next();
+    node.loc.start = tok.loc.start;
+    node.value = this.parseExpr();
     node.loc.end = this.lexer.getPos();
     return node;
   }

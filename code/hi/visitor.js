@@ -7,12 +7,16 @@ class Visitor {
 
   visitExprStmt(node) {}
 
+  visitPrintStmt(node) {}
+
   visitStmt(node) {
     switch (node.type) {
       case NodeType.EXPR_STMT:
         return this.visitExprStmt(node);
       case NodeType.SAY_HI:
         return this.visitSayHi(node);
+      case NodeType.PRINT_STMT:
+        return this.visitPrintStmt(node);
     }
   }
 

@@ -20,6 +20,13 @@ class YamlVisitor extends Visitor {
     };
   }
 
+  visitPrintStmt(node) {
+    return {
+      type: node.type,
+      value: this.visitExpr(node.value)
+    };
+  }
+
   visitBinaryExpr(node) {
     return {
       type: node.type,

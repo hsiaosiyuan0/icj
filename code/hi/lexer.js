@@ -26,6 +26,7 @@ TokenType.DIV = "/";
 TokenType.ADD = "+";
 TokenType.SUB = "-";
 TokenType.EXPO = "**";
+TokenType.PRINT = "print";
 
 class Lexer {
   constructor(src) {
@@ -45,6 +46,7 @@ class Lexer {
     const ch = this.src.peek();
     if (ch === '"') return this.readString();
     if (ch === "h") return this.readHi();
+    if (ch === "p") return this.readPrint();
     if (Lexer.isDigit(ch)) return this.readNumber();
     if (Lexer.isOp(ch)) return this.readOp();
     if (ch === EOF) return new Token(TokenType.EOF);
@@ -53,6 +55,16 @@ class Lexer {
 
   makeErrMsg() {
     return `Unexpected char at line: ${this.src.line} column: ${this.src.col}`;
+  }
+
+  readPrint() {
+    const tok = new Token(TokenType.PRINT);
+    tok.loc.start = this.getPos();
+    const print = this.src.read(5);
+    assert.ok(print === "print", this.makeErrMsg());
+    tok.loc.end = this.getPos();
+    tok.value = "print";
+    return tok;
   }
 
   readHi() {
