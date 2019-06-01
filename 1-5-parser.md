@@ -1,4 +1,4 @@
-# 语法分析器
+# 1.5 语法分析器
 
 通常的语法解析算法有「LL，Left-to-right, Leftmost Derivation」和「LR, Left-to-right, Rightmost derivation」两种，第一个 L 表示 Left-to-right，第二个 L 和 R 分别表示最左推导和最右推导。
 
