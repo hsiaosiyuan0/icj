@@ -5,8 +5,7 @@ const { InterpretVisitor } = require("./interpret-visitor");
 const { YamlVisitor } = require("./yaml-visitor");
 const util = require("util");
 
-const code = `2 * 3 + 4
-`;
+const code = `1 + 2 ** 3 * 5`;
 const src = new Source(code);
 const lexer = new Lexer(src);
 const parser = new Parser(lexer);

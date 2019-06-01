@@ -1,4 +1,4 @@
-# 解析算术表达式
+# 解析算术表达式 - 左递归和其消除法
 
 ## 算术表达式语法
 
@@ -196,7 +196,7 @@ expr' ::= "*" expr expr'
         | ε
 ```
 
-于是我们得到一个新的结论，对于形如：
+于是我们发现一个新的结论，对于形如：
 
 ```ebnf
 A ::= Aα | Aβ | γ
@@ -535,7 +535,7 @@ const { InterpretVisitor } = require("./interpret-visitor");
 const { YamlVisitor } = require("./yaml-visitor");
 const util = require("util");
 
-const code = `1 + 2 * 3
+const code = `1 + 2 + 3
 4 + 5 * 6
 `;
 const src = new Source(code);
@@ -559,7 +559,7 @@ body:
       left: '1'
       right:
         type: binaryExpr
-        op: '*'
+        op: '+'
         left: '2'
         right: '3'
   - type: exprStmt

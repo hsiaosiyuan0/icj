@@ -25,6 +25,7 @@ TokenType.MUL = "*";
 TokenType.DIV = "/";
 TokenType.ADD = "+";
 TokenType.SUB = "-";
+TokenType.EXPO = "**";
 
 class Lexer {
   constructor(src) {
@@ -36,7 +37,7 @@ class Lexer {
   }
 
   static isOp(ch) {
-    return ["*", "/", "+", "-"].indexOf(ch) !== -1;
+    return ["*", "/", "+", "-", "*"].indexOf(ch) !== -1;
   }
 
   next() {
@@ -101,6 +102,12 @@ class Lexer {
     const tok = new Token();
     tok.loc.start = this.getPos();
     tok.type = this.src.read();
+    if (tok.type === "*") {
+      if (this.src.peek() === "*") {
+        this.src.read();
+        tok.type = "**";
+      }
+    }
     tok.loc.end = this.getPos();
     return tok;
   }

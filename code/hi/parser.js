@@ -93,8 +93,52 @@ class Parser {
   }
 
   parseExpr() {
-    const num = this.parseNum();
-    return this.parseExpr1(num);
+    let left = this.parseTerm();
+    while (true) {
+      const op = this.lexer.peek();
+      if (op.type !== "+" && op.type !== "-") break;
+      this.lexer.next();
+      const node = new BinaryExpr();
+      node.left = left;
+      node.op = op;
+      node.right = this.parseTerm();
+      left = node;
+    }
+    return left;
+  }
+
+  parseTerm() {
+    let left = this.parseExpo();
+    while (true) {
+      const op = this.lexer.peek();
+      if (op.type !== "*" && op.type !== "/") break;
+      this.lexer.next();
+      const node = new BinaryExpr();
+      node.left = left;
+      node.op = op;
+      node.right = this.parseExpo();
+      left = node;
+    }
+    return left;
+  }
+
+  parseExpo() {
+    let left = this.parseFactor();
+    while (true) {
+      const op = this.lexer.peek();
+      if (op.type !== "**") break;
+      this.lexer.next();
+      const node = new BinaryExpr();
+      node.left = left;
+      node.op = op;
+      node.right = this.parseExpo();
+      left = node;
+    }
+    return left;
+  }
+
+  parseFactor() {
+    return this.parseNum();
   }
 
   parseNum() {
@@ -103,17 +147,6 @@ class Parser {
     assert.ok(tok.type === TokenType.NUMBER, this.makeErrMsg(tok));
     node.loc = tok.loc;
     node.value = tok.value;
-    return node;
-  }
-
-  parseExpr1(left) {
-    const node = new BinaryExpr();
-    node.left = left;
-    node.op = this.lexer.peek();
-    if (!Lexer.isOp(node.op.type)) return left;
-    this.lexer.next();
-    assert.ok(Lexer.isOp(node.op.type), this.makeErrMsg(node.op));
-    node.right = this.parseExpr();
     return node;
   }
 
