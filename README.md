@@ -1,6 +1,7 @@
-# 使用 JavaScript 来实现解释器和编译器 (Writing Interpreters and Compilers in JavaScript )
+# 使用 JavaScript 来实现解释器和编译器
 
-该系列将和大家一起，使用 JavaScript 徒手实现编程语言解释器和编译器。因此整个系列分为「解释器篇」和「编译器篇」。
+
+该系列「icj, Writing Interpreters and Compilers in JavaScript」中，我们将一起使用 JavaScript 徒手实现编程语言解释器和编译器。因此整个系列分为「解释器篇」和「编译器篇」。
 
 - [解释器篇](part1/README.md)
 
