@@ -1,6 +1,6 @@
 # Table of contents
 
-* [Introduction](README.md)
+* [使用 JavaScript 来实现解释器和编译器系列教程](README.md)
 * [解释器篇](part1/README.md)
   * [1.1 简述](part1/1-1-intro.md)
   * [1.2 预备工作 - Source](part1/1-2-source.md)
