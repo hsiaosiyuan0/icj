@@ -6,7 +6,7 @@
 
 Source 类的结构如下：
 
-![](images/source.svg)
+![](/images/source.svg)
 
 为了简化源文件的处理过程，我们将需要处理的源文件一次性整个地读取到属性 `code` 中，其余属性的含义分别为：
 
