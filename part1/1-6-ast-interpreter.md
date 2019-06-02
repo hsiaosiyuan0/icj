@@ -4,7 +4,7 @@
 
 因为 AST 是一个树形结构，那么很明显，我们需要通过遍历这个树形结构来使用它。
 
-由于 AST 中有很多不同类型的节点\(尽管目前我们的 hi 语言只有寥寥无几的几个类型\)，而针对这些节点，我们大概率也会采取不同的操作，因此我们将对这些节点的操作都抽离出来，放到一个名为 Visitor 的类中。这也是利用了\[设计模式\]\([https://zh.wikipedia.org/wiki/设计模式\_\(计算机\)\)中的访问者模式「Visitor](https://zh.wikipedia.org/wiki/设计模式_%28计算机%29%29中的访问者模式「Visitor) Pattern」。
+由于 AST 中有很多不同类型的节点\(尽管目前我们的 hi 语言只有寥寥无几的几个类型\)，而针对这些节点，我们大概率也会采取不同的操作，因此我们将对这些节点的操作都抽离出来，放到一个名为 Visitor 的类中。这也是利用了[设计模式](https://zh.wikipedia.org/wiki/设计模式_%28计算机%29)中的访问者模式「Visitor Pattern」。
 
 下面我们来看一下 Visitor 的结构：
 
@@ -17,7 +17,7 @@ class Visitor {
 
 由于我们的 hi 语言太简单了，它只有两个节点类型，一个是 `PROG` 和 `SAY_HI`，所以我们的 Visitor 中的操作也只有两个。
 
-现在我们开始实现我们的解释器，我们的解释器需要继承于 Visitor 类，我们给它取名 InterpretVisitor：
+现在我们开始实现我们的解释器，我们的解释器需要继承于 Visitor 类，我们给它取名「InterpretVisitor」：
 
 ```javascript
 class InterpretVisitor extends Visitor {
