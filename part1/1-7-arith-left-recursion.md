@@ -12,7 +12,7 @@
 
 按照上面的步骤来看，首先我们需要在向语法中增加数学表达式的新规则。我们来看看数学表达式的语法来如何书写：
 
-```ebnf
+```text
 expr ::= expr "*" expr
        | expr "/" expr
        | expr "+" expr
@@ -24,7 +24,7 @@ expr ::= expr "*" expr
 
 我们先来回顾下，我们对已有的 hi 语言规则是如何进行解析的：
 
-```ebnf
+```text
 prog ::= say_hi*
 say_hi ::= HI STRING
 HI ::= "hi"
@@ -37,7 +37,7 @@ STRING ::= '"' [^"]* '"'
 
 但是问题很快就出现了，我们先看第一个分支：
 
-```ebnf
+```text
 expr ::= expr "*" expr
 ```
 
@@ -53,19 +53,19 @@ expr ::= expr "*" expr
 
 为了将问题简化，我们来看一个简单的左递归的语法规则：
 
-```ebnf
+```text
 A ::= Aα | β
 ```
 
 这个语法规则中包含这样几个内容：
 
 1. 非终结符 A
-2. 不以 A 开头的(非)终结符 α
-3. 不以 A 开头的(非)终结符 β
+2. 不以 A 开头的\(非\)终结符 α
+3. 不以 A 开头的\(非\)终结符 β
 
 有一点需要注意的是，上面的语法规则属于直接左递归，因为它的右边的规则内容立刻出现了自身。为了做为对比，我们看一下间接左递归：
 
-```ebnf
+```text
 A ::= Sα | β
 S ::= Aβ
 ```
@@ -93,17 +93,17 @@ S ::= Aβ
 为了使得我们的自上而下的解析器得以工作，我们重写后的规则需要满足：
 
 1. 规则 A 需要从左往右来匹配输入
-2. 规则 A 最左边的第一个(非)终结符不能为 A 自身
+2. 规则 A 最左边的第一个\(非\)终结符不能为 A 自身
 
 根据这两个原则，我们首先将 A 写成：
 
-```ebnf
+```text
 A ::= βA'
 ```
 
 这样的目的就是先匹配 `βααα...` 中的第一个 `β`，这就满足了我们上面的两点重写需求。但是还没结束，我们接着 `A'` 要做的就是能够匹配重复出现的 `α`，因此我们可以将 `A'` 写成：
 
-```bnf
+```text
 A' ::= αA' | ε
 ```
 
@@ -111,7 +111,7 @@ A' ::= αA' | ε
 
 我们将它们放到一起：
 
-```ebnf
+```text
 A  ::= βA'
 A' ::= αA' | ε
 ```
@@ -128,20 +128,20 @@ A' ::= αA' | ε
 
 现在我们得出结论，对于直接左递归：
 
-```ebnf
+```text
 A ::= Aα | β
 ```
 
 我们可以通过左递归消除，将其变换为：
 
-```ebnf
+```text
 A  ::= βA'
 A' ::= αA' | ε
 ```
 
 现在我们着手看一下我们的算术表达式语法，针对它如何进行左递归消除：
 
-```ebnf
+```text
 expr ::= expr "*" expr
        | num
 ```
@@ -149,19 +149,19 @@ expr ::= expr "*" expr
 我们直接套用公式，令:
 
 * `A = expr`，因为 `A` 的定义为需要进行消除的项
-* `α = "*" expr`，因为 `α` 的定义为，以不是待消除项开头的(非)终结符
-* `β = num`，因为 `β` 的定义为，以不是待消除项开头的(非)终结符
+* `α = "*" expr`，因为 `α` 的定义为，以不是待消除项开头的\(非\)终结符
+* `β = num`，因为 `β` 的定义为，以不是待消除项开头的\(非\)终结符
 
 经过变换得到：
 
-```ebnf
+```text
 expr  ::= num expr'
 expr' ::= "*" expr expr' | ε
 ```
 
 我们已经可以将乘法表达式进行左递归消除了，接下来我们看看如何处理整个算术表达式：
 
-```ebnf
+```text
 expr ::= expr "*" expr
        | expr "/" expr
        | expr "+" expr
@@ -171,7 +171,7 @@ expr ::= expr "*" expr
 
 面对一下变得这么复杂的表达式，大家估计会感到无从下手。我们可以利用已经掌握的知识，将每个分支先拆开来进行消除：
 
-```ebnf
+```text
 expr  ::= num expr'
 expr' ::= "*" expr expr' | ε
 
@@ -187,7 +187,7 @@ expr' ::= "-" expr expr' | ε
 
 我们将上面的结果两行一组、相互对照起来观察，不难发现，第一行都是相同的，第二行也只是操作符不同，将所有第二行综合起来看，它们其实都是表示 `expr'` 的不同分支。我们可以将上面的结果进行合并：
 
-```ebnf
+```text
 expr  ::= num expr'
 expr' ::= "*" expr expr'
         | "/" expr expr' 
@@ -198,13 +198,13 @@ expr' ::= "*" expr expr'
 
 于是我们发现一个新的结论，对于形如：
 
-```ebnf
+```text
 A ::= Aα | Aβ | γ
 ```
 
 的规则，我们可以将其转换成：
 
-```ebnf
+```text
 A  ::= γA'
 A' ::= αA' | βA' | ε
 
@@ -222,7 +222,7 @@ A' ::= ( α | β )*
 
 我们最终处理完成后的表达式语法为：
 
-```ebnf
+```text
 expr  ::= num expr'
 
 /* 对照上面简化 A' 中间形式 */
@@ -257,7 +257,7 @@ expr' ::= ( ( "*" | "/" | "+" | "-" ) expr )*
 
 我们先来完善词法解析器，首先我们先增加几个 Token 类型：
 
-```js
+```javascript
 TokenType.NUMBER = "number";
 TokenType.MUL = "*";
 TokenType.DIV = "/";
@@ -267,7 +267,7 @@ TokenType.SUB = "-";
 
 这些新增的类型即为我们接下来将要解析的 Token 类型，我们来修改一下 `Lexer::next` 方法：
 
-```js
+```javascript
 next() {
   this.skipWhitespace();
   const ch = this.src.peek();
@@ -284,7 +284,7 @@ next() {
 
 没有什么特别新的东西，只是增加了两个预测分支，分别预测接下来选择解析数字还是解析运算符。接着我们看一下 `readNumber` 和 `readOp` 的实现：
 
-```js
+```javascript
 readNumber() {
   const tok = new Token(TokenType.NUMBER);
   tok.loc.start = this.getPos();
@@ -313,7 +313,7 @@ readOp() {
 
 如果输入的是数字的话，我们就不断的尝试读取接下来的数字，直到接下来的字符不是数字为止，这里我们只处理了整型数，并且没有特别考虑前导零和正负整数的情况。所以符合我们条件的数字面量的类型为：以可选前导零开头的任意整数。
 
-处理操作符(运算符)的过程就很简单了，由于我们目前的操作符都是单个字符的，直接读取它们就行了。
+处理操作符\(运算符\)的过程就很简单了，由于我们目前的操作符都是单个字符的，直接读取它们就行了。
 
 ### 完善语法解析器
 
@@ -321,7 +321,7 @@ readOp() {
 
 首先，我们添加几个新的节点类型的定义：
 
-```js
+```javascript
 class ExprStmt extends Node {
   constructor(loc, value) {
     super(NodeType.EXPR_STMT, loc);
@@ -358,7 +358,7 @@ class NumLiteral extends Node {
 
 为了对应新增的节点定义，我们也需要添加几个新的节点类型：
 
-```js
+```javascript
 NodeType.EXPR_STMT = "exprStmt";
 NodeType.BINARY_EXPR = "binaryExpr";
 NodeType.NUMBER = "number";
@@ -366,7 +366,7 @@ NodeType.NUMBER = "number";
 
 和完善词法解析器的步骤相似，我们也从语法解析的入口方法开始完善：
 
-```js
+```javascript
 parseProg() {
   const node = new Prog();
   node.loc.start = this.lexer.getPos();
@@ -388,7 +388,7 @@ parseProg() {
 
 由于 ExprStmt 只有唯一的表达式节点，所以对它的解析也很接单：
 
-```js
+```javascript
 parseExprStmt() {
   const node = new ExprStmt();
   const expr = this.parseExpr();
@@ -400,7 +400,7 @@ parseExprStmt() {
 
 `parseExprStmt` 只是简单地调用 `parseExpr` 方法，那么 `parseExpr` 实现为：
 
-```js
+```javascript
 parseExpr() {
   const num = this.parseNum();
   return this.parseExpr1(num);
@@ -429,7 +429,7 @@ parseExpr1(left) {
 
 上面的代码对照消除左递归后的表达式语法：
 
-```ebnf
+```text
 expr  ::= num expr'
 expr' ::= ( ( "*" | "/" | "+" | "-" ) expr )*
         | ε
@@ -441,7 +441,7 @@ expr' ::= ( ( "*" | "/" | "+" | "-" ) expr )*
 
 对于表达式 `1 + 2 * 3` 来说，调用的过程如下：
 
-![](/images/expr123.svg)
+![](../.gitbook/assets/expr123.svg)
 
 我们可以以一个 U 型的方式来看这个图，从左边开始往下，到了最底部时，转到右边往上。左边和中间左半边部分，表示我们的递归调用链、期间发生的参数传递、以及表达式字符串被不断读取的消减过程。右边和中间的右半部分表示了递归调用结束，不断返回并构造节点的过程。
 
@@ -451,7 +451,7 @@ expr' ::= ( ( "*" | "/" | "+" | "-" ) expr )*
 
 我们先往类「Visitor」中增加一些内容：
 
-```js
+```javascript
 visitExprStmt(node) {}
 
 visitStmt(node) {
@@ -483,7 +483,7 @@ visitExpr(node) {
 
 下面是「YamlVisitor」的实现：
 
-```js
+```javascript
 const { Visitor } = require("./visitor");
 const yaml = require("js-yaml");
 
@@ -527,7 +527,7 @@ class YamlVisitor extends Visitor {
 
 最后通过一小段程序来检验这次的完成结果：
 
-```js
+```javascript
 const { Source } = require("./source");
 const { Lexer, TokenType } = require("./lexer");
 const { Parser } = require("./parser");
@@ -573,3 +573,4 @@ body:
         left: '5'
         right: '6'
 ```
+

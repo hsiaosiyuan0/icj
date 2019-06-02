@@ -1,4 +1,4 @@
-# 1.5 语法分析器
+# 1.5 语法解析器
 
 通常的语法解析算法有「LL，Left-to-right, Leftmost Derivation」和「LR, Left-to-right, Rightmost derivation」两种，第一个 L 表示 Left-to-right，第二个 L 和 R 分别表示最左推导和最右推导。
 
@@ -6,7 +6,7 @@
 
 比如我们的 hi 语言：
 
-```ebnf
+```text
 prog ::= say_hi*
 say_hi ::= HI STRING
 HI ::= "hi"
@@ -32,9 +32,9 @@ STRING ::= '"' [^"]* '"'
 
 最右推导可以描述的语法集合大于最左推导，但是缺点就是非常复杂且难于徒手完成它，因此出现了很多工具，用于生成 LR Parser，比如 [Yacc](http://dinosaur.compilertools.net/yacc/)。本系列的主要目的就是教大家如何手写编译器，因此余下的章节中，我们将只讨论最左推导。
 
-最左推导还会有一个 N 的代数形式 - 「LL(N)」。N 表示的是在遇到分支的时候，最多向前预读 N 个 Token。比如有这样的语法：
+最左推导还会有一个 N 的代数形式 - 「LL\(N\)」。N 表示的是在遇到分支的时候，最多向前预读 N 个 Token。比如有这样的语法：
 
-```ebnf
+```text
 stmt ::= ifStmt | whileStmt | blockStmt
 stmtList ::= stmt*
 ifStmt ::= "if" "(" expr  ")" stmt "else" stmt
@@ -42,7 +42,7 @@ whileStmt ::= "while" "(" expr ")" stmt
 blockStmt ::= "{" stmtList "}"
 ```
 
-我们在处理 `stmt` 规则的时候，至少需要预读 1 个 Token，根据该预读的 Token 是 `if` 还是 `while` 还是 `{` 来是选择接下来处理 `ifStmt` 还是 `whileStmt` 还是 `blockStmt` 。因此这样的语法又被称为 LL(1) 语法。
+我们在处理 `stmt` 规则的时候，至少需要预读 1 个 Token，根据该预读的 Token 是 `if` 还是 `while` 还是 `{` 来是选择接下来处理 `ifStmt` 还是 `whileStmt` 还是 `blockStmt` 。因此这样的语法又被称为 LL\(1\) 语法。
 
 以 C 语言入门的同学，不知道是否记得当初学习 if 语句的口诀「if 只能跟单条语句，如果需要使用多条语句则需要将多条语句放在大括号中」。如果了解了上面语法的含义，我就会知道原来 if 语句实际上只能跟单条语句，只不过有一个 `blockStmt` 语句，在它内部可以包含多条语句。
 
@@ -55,7 +55,7 @@ blockStmt ::= "{" stmtList "}"
 
 现在可以看看作为我们 hi 语言的语法解析器的框架代码：
 
-```js
+```javascript
 class Parser {
   constructor(lexer) {
     this.lexer = lexer;
@@ -79,7 +79,7 @@ class Parser {
 
 在开始完善解析器之前，还需要介绍另外两个类：「Node」和「NodeType」
 
-```js
+```javascript
 class Node {
   constructor(type, loc) {
     this.type = type;
@@ -110,7 +110,7 @@ NodeType.SAY_HI = "sayhi";
 
 现在我们可以开始看看补全后的解析方法：
 
-```js
+```javascript
 parseProg() {
   const node = new Prog();
   node.loc.start = this.lexer.getPos();
@@ -118,10 +118,10 @@ parseProg() {
   while (true) {
     const tok = this.lexer.peek();
     if (tok.type === TokenType.EOF) break;
-    
+
     node.body.push(this.parseSayHi());
   }
-  
+
   node.loc.end = this.lexer.getPos();
   return node;
 }
@@ -134,7 +134,7 @@ parseSayHi() {
 
   tok = this.lexer.next();
   assert.ok(tok.type === TokenType.STRING, this.makeErrMsg(tok));
-  
+
   node.value = tok.value;
   node.loc.end = tok.loc.end;
   return node;
@@ -154,7 +154,7 @@ makeErrMsg(tok) {
 
 最后我们来看一看，如何来将 Parser 和 Lexer 放到一起，来解析程序，并打印结果：
 
-```js
+```javascript
 const { Source } = require("./source");
 const { Lexer, TokenType } = require("./lexer");
 const { Parser } = require("./parser");
@@ -171,7 +171,7 @@ console.log(util.inspect(ast, true, null));
 
 运气好的情况下，我们大概会得到以下的输出：
 
-```
+```text
 Prog {
   type: 'prog',
   loc:
@@ -190,3 +190,4 @@ Prog {
 ```
 
 这个输出的内容，就是我们常说的抽象语法树「AST，Abstract Syntax Tree」了。这个树形结构，就是用来描述源码中的词法元素根据语法规则组成的层程序结构。有了这个结构之后，我们可以做更多的事情，比如我们接下来将进一步实现一个解释器，来解释运行我们的代码。
+

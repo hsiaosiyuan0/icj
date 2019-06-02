@@ -4,11 +4,11 @@
 
 因为 AST 是一个树形结构，那么很明显，我们需要通过遍历这个树形结构来使用它。
 
-由于 AST 中有很多不同类型的节点(尽管目前我们的 hi 语言只有寥寥无几的几个类型)，而针对这些节点，我们大概率也会采取不同的操作，因此我们将对这些节点的操作都抽离出来，放到一个名为 Visitor 的类中。这也是利用了[设计模式](https://zh.wikipedia.org/wiki/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F_(%E8%AE%A1%E7%AE%97%E6%9C%BA))中的访问者模式「Visitor Pattern」。
+由于 AST 中有很多不同类型的节点\(尽管目前我们的 hi 语言只有寥寥无几的几个类型\)，而针对这些节点，我们大概率也会采取不同的操作，因此我们将对这些节点的操作都抽离出来，放到一个名为 Visitor 的类中。这也是利用了\[设计模式\]\([https://zh.wikipedia.org/wiki/设计模式\_\(计算机\)\)中的访问者模式「Visitor](https://zh.wikipedia.org/wiki/设计模式_%28计算机%29%29中的访问者模式「Visitor) Pattern」。
 
 下面我们来看一下 Visitor 的结构：
 
-```js
+```javascript
 class Visitor {
   visitProg(node) {}
   visitSayHi(node) {}
@@ -19,7 +19,7 @@ class Visitor {
 
 现在我们开始实现我们的解释器，我们的解释器需要继承于 Visitor 类，我们给它取名 InterpretVisitor：
 
-```js
+```javascript
 class InterpretVisitor extends Visitor {
   visitProg(node) {
     node.body.forEach(stmt => this.visitSayHi(stmt));
@@ -34,7 +34,7 @@ class InterpretVisitor extends Visitor {
 
 可以看到，我们在 `visitProg` 内部，就是迭代节点的 `body` 属性，使用其中的元素为参数调用 `visitSayHi` 方法。回顾我们的 `Prog` 节点的定义：
 
-```js
+```javascript
 class Prog extends Node {
   constructor(loc, body = []) {
     super(NodeType.Prog, loc);
@@ -49,7 +49,7 @@ class Prog extends Node {
 
 我们将所有这些组合到一起，来运行一下我们的解释器：
 
-```js
+```javascript
 const { Source } = require("./source");
 const { Lexer, TokenType } = require("./lexer");
 const { Parser } = require("./parser");
@@ -70,9 +70,10 @@ visitor.visitProg(ast);
 
 幸运的话，我们会在控制台看到如下的输出：
 
-```
+```text
 hi lexer
 hi parser
 ```
 
 到此为止，我们已经完成了一个解释型的语言。千万不要感到惊讶，尽管它目前非常的简单，但是它真的是一个编程语言。
+

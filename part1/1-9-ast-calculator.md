@@ -4,7 +4,7 @@
 
 为了可以将打印我们的表达式的执行结果，在实现函数调用的语法之前，我们先实现一个支持打印执行结果的语法：
 
-```ebnf
+```text
 print ::= "print" expr
 ```
 
@@ -12,7 +12,7 @@ print ::= "print" expr
 
 语法添加完毕后，第一步还是先完善词法解析器：
 
-```js
+```javascript
 TokenType.PRINT = "print";
 
 class Lexer {
@@ -42,7 +42,7 @@ class Lexer {
 
 接着我们来完善语法解析器：
 
-```js
+```javascript
 class PrintStmt extends Node {
   constructor(loc, value) {
     super(NodeType.PRINT_STMT, loc);
@@ -79,7 +79,7 @@ class Parser {
 
 接着完善 Visitor：
 
-```js
+```javascript
 class Visitor {
   visitPrintStmt(node) {}
 
@@ -100,7 +100,7 @@ class Visitor {
 
 最后，我们来完善 InterpretVisitor：
 
-```js
+```javascript
 class InterpretVisitor extends Visitor {
   visitProg(node) {
     node.body.forEach(stmt => this.visitStmt(stmt));
@@ -138,7 +138,7 @@ class InterpretVisitor extends Visitor {
 
 我们可以来试一试运行语句 `print 1 + 2 ** 3 * 5`：
 
-```js
+```javascript
 const code = `print 1 + 2 ** 3 * 5`;
 const src = new Source(code);
 const lexer = new Lexer(src);
@@ -150,3 +150,4 @@ visitor.visitProg(ast);
 ```
 
 我们将会得到输出 `41`。因为我们的 hi 语言使用了和 JS 相同的运算符优先级和结合性，所以大家也可以将表达式 `1 + 2 ** 3 * 5` 直接粘贴到浏览器的控制台，来验证执行的结果是否和 hi 语言相同。
+

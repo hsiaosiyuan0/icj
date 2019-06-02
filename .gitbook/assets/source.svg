@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="169px" preserveAspectRatio="none" style="width:136px;height:169px;" version="1.1" viewBox="0 0 136 169" width="136px" zoomAndPan="magnify"><defs><filter height="300%" id="fklt7ya00jf5f" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--class Source--><rect fill="#FEFECE" filter="url(#fklt7ya00jf5f)" height="150.4375" id="Source" style="stroke: #A80036; stroke-width: 1.5;" width="119" x="6" y="8"/><ellipse cx="40.35" cy="24" fill="#ADD1B2" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M42.6938,19.6719 L42.8656,19.75 C43.0844,19.4375 43.2875,19.3438 43.5844,19.3438 C43.8813,19.3438 44.1625,19.4844 44.3188,19.75 C44.4125,19.9063 44.4281,20.0313 44.4281,20.4688 L44.4281,21.8906 C44.4281,22.3125 44.3969,22.5 44.2875,22.6563 C44.1156,22.875 43.85,23.0156 43.5844,23.0156 C43.3656,23.0156 43.1313,22.9063 42.9906,22.7656 C42.85,22.6406 42.8188,22.5156 42.7563,22.1094 C42.6625,21.7031 42.4906,21.4844 42.0063,21.2031 C41.5375,20.9531 40.9281,20.7969 40.35,20.7969 C38.6156,20.7969 37.3656,22.1094 37.3656,23.8906 L37.3656,24.9844 C37.3656,26.6875 38.6625,27.7813 40.7094,27.7813 C41.475,27.7813 42.1625,27.6563 42.5844,27.3906 C42.7719,27.2969 42.7719,27.2969 43.225,26.8125 C43.4125,26.625 43.6156,26.5469 43.8344,26.5469 C44.3031,26.5469 44.6938,26.9375 44.6938,27.3906 C44.6938,27.7813 44.3656,28.2344 43.7875,28.6406 C43.0375,29.1875 41.8813,29.4844 40.6625,29.4844 C37.7719,29.4844 35.6625,27.5938 35.6625,25.0156 L35.6625,23.8906 C35.6625,21.1719 37.6625,19.0938 40.2875,19.0938 C41.1625,19.0938 41.7563,19.2344 42.6938,19.6719 Z "/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="44" x="58.65" y="28.1543">Source</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="7" x2="124" y1="40" y2="40"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="64" x="12" y="54.2104">string code</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="54" x="12" y="67.0151">string file</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="50" x="12" y="79.8198">string ch</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="59" x="12" y="92.6245">string ofst</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="57" x="12" y="105.4292">string line</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="53" x="12" y="118.2339">string col</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="7" x2="124" y1="124.8281" y2="124.8281"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="106" x="12" y="139.0386">string read(int cnt)</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="107" x="12" y="151.8433">string peek(int cnt)</text><!--
+@startuml
+class Source {
+  string code 
+  string file 
+  string ch    
+  string ofst  
+  string line  
+  string col 
+
+  string read(int cnt)
+  string peek(int cnt)
+}
+@enduml
+
+PlantUML version 1.2019.07beta1(Unknown compile time)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Java Version: 1.7.0_25-b15
+Operating System: Linux
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>

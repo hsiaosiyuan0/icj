@@ -4,7 +4,7 @@
 
 上一节我们已经得到了消除左递归后的算术表达式语法，并根据语法完善了我们的解析程序。现在让我们来试着用我们上一节完成的内容，来解析算术表达式 `2 * 3 + 4`，我们会得到类似下面的输出：
 
-```
+```text
 type: prog
 body:
   - type: exprStmt
@@ -21,7 +21,7 @@ body:
 
 我们解析的结果，从现实的数学表达式的角度来看，是存在问题的，因为我们将表达式解析成了：
 
-```
+```text
  node
  / | \
 2  * node
@@ -31,7 +31,7 @@ body:
 
 上面的结构表示的是 `2 * (3 + 4)`，而表达式 `2 * 3 + 4` 的结构应为：
 
-```
+```text
     node
     / | \
  node +  4
@@ -41,11 +41,11 @@ body:
 
 为了解决这个问题，我们引入和数学上解决该问题类似的概念 - 优先级「Precedence」。优先级表示的是，在一个表达式中，如果同时出现多个运算符，那么具有较高优先级的运算符将先进行预算。
 
-我们通过观察上面 `2 * 3 + 4` 对应的结构图发现，具有较高优先级的表达式(`*`)，将作为较低优先级的表达式(`+`)的操作数，即子节点。而是什么造就了图中的层次结构呢？就是我们的语法，语法规则和其待展开项，经过我们的 Top-Down 解析器的解析，就会体现为父子节点的关系。
+我们通过观察上面 `2 * 3 + 4` 对应的结构图发现，具有较高优先级的表达式\(`*`\)，将作为较低优先级的表达式\(`+`\)的操作数，即子节点。而是什么造就了图中的层次结构呢？就是我们的语法，语法规则和其待展开项，经过我们的 Top-Down 解析器的解析，就会体现为父子节点的关系。
 
 依照这个思路，我们可以将具有较高优先级的表达式独立出来、作为新的语法规则，然后将其作为具有较低优先级的语法规则的待展开项。对于四则运算而言，其中的操作符优先级由高到低为：`num > "*/" > "+-"`，因此我们可以得到：
 
-```ebnf
+```text
 /* rule1 */
 expr ::= expr "+" term
        | expr "-" term
@@ -64,7 +64,7 @@ factor ::= num
 
 回顾我们的左递归消除公式：
 
-```ebnf
+```text
 A ::= Aα | β
 // 消除左递归后
 A  ::= βA'
@@ -81,13 +81,13 @@ A  ::= βα*
 
 将得到消除后的结果：
 
-```ebnf
+```text
 expr ::= term ( ("+" | "-") term )*
 ```
 
 rule2 的消除就留给大家来尝试了。上面的算术表达式语法最终为：
 
-```ebnf
+```text
 expr ::= term ( ( "+" | "-" ) term )*
 term ::= factor ( ( "*" | "/" ) factor )*
 factor ::= num
@@ -95,7 +95,7 @@ factor ::= num
 
 根据最终的语法，我们来完善我们的解析器。得益于我们之前的完善工作，现在我们这里只需要向语法解析器中增加3个方法，来对应上面的规则：
 
-```js
+```javascript
 parseExpr() {
   let left = this.parseTerm();
   while (true) {
@@ -143,7 +143,7 @@ parseFactor() {
 
 在循环中，我们将中间每一步得到的节点，都作为下一个即将处理的 BinaryExpr 节点的左边子节点。因此对于表达式 `1 + 2 - 3`，解析后的结构为：
 
-```
+```text
     node
     / | \
  node -  3
@@ -155,7 +155,7 @@ parseFactor() {
 
 我们可以试再着解析问题表达式 `2 * 3 + 4`，我们会得到下面的输出：
 
-```
+```text
 type: prog
 body:
   - type: exprStmt
@@ -172,7 +172,7 @@ body:
 
 上面的结果对应下图：
 
-```
+```text
     node
     / | \
  node +  4
@@ -186,12 +186,11 @@ body:
 
 接下来我们来解析一个新的运算符 `**`，这个运算符就是 JS 中的指数运算符。该运算符含有两个字符，而我们目前的运算符还只是单个字符，除了这点不同之外，它还具有比 `*/` 运算符更高的优先级。
 
-我们可以打开这个页面 [Operator precedence
-](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence)，这个页面中列出了 JS 中所有的运算符，以及它们的优先级。
+我们可以打开这个页面 [Operator precedence ](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence)，这个页面中列出了 JS 中所有的运算符，以及它们的优先级。
 
 在这上述页面中，我们可以发现 `**` 运算符的优先级为 `15`，而 `*/` 的优先级为 `14`。因此为了在语法中包含这个运算规则，我们需要将现有的规则修改成如下的形式：
 
-```ebnf
+```text
 expr ::= term ( ( "+" | "-" ) term )*
 term ::= expo ( ( "*" | "/" ) expo )*
 expo ::= factor ( "**" factor )*
@@ -202,7 +201,7 @@ factor ::= num
 
 首先在 Lexer 中修改：
 
-```js
+```javascript
 // 增加 Token 类型
 TokenType.EXPO = "**";
 
@@ -230,7 +229,7 @@ readOp() {
 
 接着修改 Parser：
 
-```js
+```javascript
 parseTerm() {
   let left = this.parseExpo();
   while (true) {
@@ -266,7 +265,7 @@ parseExpo() {
 
 修改完成后，我们试着解析表达式 `2 ** 3 ** 4`，我们会得到下面的输出：
 
-```
+```text
 type: prog
 body:
   - type: exprStmt
@@ -283,7 +282,7 @@ body:
 
 该输出的结构即为：
 
-```
+```text
     node
     / | \
  node **  4
@@ -303,7 +302,7 @@ body:
 
 比如 `a ** b ** c ** d`，对应的结构应为：
 
-```
+```text
  node
  / | \
 a  ** node
@@ -334,7 +333,7 @@ body:
 
 对应的结构就是：
 
-```
+```text
  node
  / | \
 1  + node
@@ -344,7 +343,7 @@ body:
 
 这个结果其实可以看成是将 `+` 当做右结合性来解析的结果。为什么能有这样的效果，我们来看当时的语法：
 
-```ebnf
+```text
 expr  ::= num expr'
 expr' ::= ( ( "*" | "/" | "+" | "-" ) expr )*
         | ε
@@ -352,7 +351,7 @@ expr' ::= ( ( "*" | "/" | "+" | "-" ) expr )*
 
 为了解析这样的语法，我们的代码为：
 
-```js
+```javascript
 parseExpr() {
   const num = this.parseNum();
   return this.parseExpr1(num);
@@ -381,7 +380,7 @@ parseExpr1(left) {
 
 我们还一起看了这段代码执行的流程示意图，大家可以结合起来看。这段代码将操作符都处理成右结合性的原因就在于，`parseExpr1` 方法中，对于右边节点的处理，总是调用 `parseExpr`：
 
-```js
+```javascript
 parseExpr1(left) {
   // ...
   node.right = this.parseExpr();
@@ -393,7 +392,7 @@ parseExpr1(left) {
 
 所以我们可以将我们的 `**` 处理方法修改成：
 
-```js
+```javascript
 parseExpo() {
   let left = this.parseFactor();
   while (true) {
@@ -453,3 +452,4 @@ body:
           right: '3'
         right: '5'
 ```
+
