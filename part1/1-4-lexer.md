@@ -2,7 +2,7 @@
 
 有了前面的介绍，我们编写词法解析的工作将变得很简单。接下来我们开始着手编写我们的词法解析器「Lexer」。
 
-我们的 hi 语言只有两个词法元素，分别是 `HI` 和 `STRING`。
+我们的 hi 语言只有两个词法元素，它们的类型分别是 `HI` 和 `STRING`。
 
 词法分析器的作用就是，接收 Source 的输入，并将其转化为 Tokens 输出，根据这个需求，我们可以这样来写词法解析器：
 
@@ -192,10 +192,6 @@ restorePos() {
   this.line = pos.line;
   this.col = pos.col;
 }
-
-getPos() {
-  return this.src.getPos();
-}
 ```
 
 首先我们给 Source 类增加一个属性 `posStack`，用来保存位置信息。随后，通过对这个数组进行 `push` 和 `pop` 来存入和取回位置信息。
@@ -203,6 +199,12 @@ getPos() {
 因为 `push` 和 `pop` 在代码中肯定是成对出现的，所以我们在 `restorePos` 的时候，进行了一个简单的检查。
 
 为了使我们未来在 Parser 中获取源文件时，不需要使用 `this.lexer.src.getPos()` 这么长的调用链，我们在 Lexer 中增加了 `getPos` 方法。
+
+```js
+getPos() {
+  return this.src.getPos();
+}
+```
 
 这样我们在 Parser 中只需要通过 `this.lexer.getPos()` 就可以了，是短了一点吧看起来。
 
