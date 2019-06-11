@@ -198,7 +198,7 @@ restorePos() {
 
 因为 `push` 和 `pop` 在代码中肯定是成对出现的，所以我们在 `restorePos` 的时候，进行了一个简单的检查。
 
-为了使我们未来在 Parser 中获取源文件时，不需要使用 `this.lexer.src.getPos()` 这么长的调用链，我们在 Lexer 中增加了 `getPos` 方法。
+为了使我们未来在 Parser 中获取源文件位置时，不需要使用 `this.lexer.src.getPos()` 这么长的调用链，我们在 Lexer 中增加了 `getPos` 方法。
 
 ```js
 getPos() {
