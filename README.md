@@ -12,5 +12,7 @@
 
 本系列所有代码，都归纳在 [code](https://github.com/hsiaosiyuan0/icj/tree/master/code) 目录下。
 
+200 个 stars 继续更新怎么样
+
 **该系列文章属于原创，不可用于任何收费环节或者项目中。转载请注明出处。**
 
